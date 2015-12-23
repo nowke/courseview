@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Courseview</string>
+    <string name="nav_home">CSE 4th sem</string>
+    <string name="nav_doc_2">CSE 5th sem</string>
+    <string name="nav_add">Add</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+    <string name="empty_helper">Start by adding Documents. Click \'Add\' to see available documents</string>
+    <string name="activity_document">Add Document</string>
+</resources>

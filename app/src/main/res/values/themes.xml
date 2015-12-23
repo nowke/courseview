@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.MyApp.Button.Primary.Red" parent="Widget.AppCompat.Button">
+        <item name="colorButtonNormal">@color/colorRed</item>
+        <item name="android:textColorPrimary">@android:color/white</item>
+    </style>
+</resources>
