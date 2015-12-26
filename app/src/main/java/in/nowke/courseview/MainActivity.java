@@ -198,12 +198,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void loadDocument(long documentId) {
         List<Subject> documentSubjects = helper.getAllSubjects(documentId);
-        String mdStr = helper.getSubjectContent(documentSubjects.get(0).id);
+        long curSubjectId = helper.getCurrentSubjectId(documentId);
+        String mdStr;
+        if (curSubjectId != -1) {
+            mdStr = helper.getSubjectContent(curSubjectId);
+        } else {
+            mdStr = helper.getSubjectContent(documentSubjects.get(0).id);
+        }
         setMarkDownContent(mdStr);
-        loadContentsChooser(documentSubjects);
+        loadContentsChooser(documentSubjects, curSubjectId);
     }
 
-    private void loadContentsChooser(List<Subject> documentSubjects) {
+    private void loadContentsChooser(List<Subject> documentSubjects, long curSubjectId) {
         final NavigationView nav_view_right = (NavigationView) findViewById(R.id.nav_view_right);
         nav_view_right.getMenu().clear();
 
@@ -211,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         for (int i=0; i<documentSubjects.size(); i++) {
             Subject subject = documentSubjects.get(i);
-            if (i == 0) {
+            if ((i == 0 && curSubjectId == -1) || (curSubjectId == subject.id)) {
                 nav_view_right.getMenu().add(R.id.groupContent, Menu.NONE, Menu.NONE, subject.title).setCheckable(true).setChecked(true);
             } else {
                 nav_view_right.getMenu().add(R.id.groupContent, Menu.NONE, Menu.NONE, subject.title).setCheckable(true);
@@ -232,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             public void run() {
                                 String mdContent = helper.getSubjectContent(String.valueOf(item.getTitle()));
                                 setMarkDownContent(mdContent);
+
                             }
                         });
                     }

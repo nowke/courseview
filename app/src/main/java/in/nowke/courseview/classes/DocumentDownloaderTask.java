@@ -98,8 +98,8 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
             long documentId = helper.addDocument(document);
 
             // Fill subjects
-            helper.addSubjects(subjects, documentId);
-
+            long curSubId = helper.addSubjects(subjects, documentId);
+            helper.updateCurrentSubjectToDocument(documentId, curSubId);
 
         } catch (JSONException e) {
             e.printStackTrace();

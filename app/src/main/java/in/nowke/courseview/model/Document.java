@@ -7,4 +7,5 @@ public class Document {
     public String title;
     public String owner;
     public long id;
+    public long curSubId;
 }

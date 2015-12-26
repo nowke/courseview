@@ -39,10 +39,13 @@ public class CourseviewDBAdapter {
         return id;
     }
 
-    public void addSubjects(List<Subject> subjects, long documentId) {
+    public long addSubjects(List<Subject> subjects, long documentId) {
         SQLiteDatabase db = helper.getWritableDatabase();
 
-        for (Subject subject : subjects) {
+        long curSubId = -1;
+
+        for (int i=0; i<subjects.size(); i++) {
+            Subject subject = subjects.get(i);
             ContentValues contentValues = new ContentValues();
             contentValues.put(CourseDBHelper.SUBJECT_DOCUMENT_ID, documentId);
             contentValues.put(CourseDBHelper.SUBJECT_TITLE, subject.title);
@@ -50,8 +53,12 @@ public class CourseviewDBAdapter {
             contentValues.put(CourseDBHelper.SUBJECT_CREDITS, subject.credits);
             contentValues.put(CourseDBHelper.SUBJECT_CONTENT, subject.content);
 
-            db.insert(CourseDBHelper.TABLE_SUBJECT, null, contentValues);
+            long id = db.insert(CourseDBHelper.TABLE_SUBJECT, null, contentValues);
+            if (i==0) {
+                curSubId = id;
+            }
         }
+        return curSubId;
     }
 
     public List<Subject> getAllSubjects(long documentId) {
@@ -78,15 +85,42 @@ public class CourseviewDBAdapter {
         return subjectList;
     }
 
+    public void updateCurrentSubjectToDocument(long documentId, long subjectId) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CourseDBHelper.DOCUMENT_CUR_SUBJECT_ID, subjectId);
+        db.update(CourseDBHelper.TABLE_DOCUMENT, contentValues, CourseDBHelper.DOCUMENT_ID + "=" + documentId, null);
+    }
+
+    public long getCurrentSubjectId(long documentId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.DOCUMENT_CUR_SUBJECT_ID};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_DOCUMENT, columns, CourseDBHelper.DOCUMENT_ID + "=" + documentId, null, null, null, null);
+        long subjectId = -1;
+
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(CourseDBHelper.DOCUMENT_CUR_SUBJECT_ID);
+            subjectId = cursor.getLong(index);
+        }
+        return subjectId;
+    }
+
     public String getSubjectContent(long subjectId) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String columns[] = {CourseDBHelper.SUBJECT_CONTENT};
+        String columns[] = {CourseDBHelper.SUBJECT_CONTENT, CourseDBHelper.SUBJECT_DOCUMENT_ID};
         Cursor cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns, CourseDBHelper.SUBJECT_ID + "=" + subjectId, null, null, null, null);
-        String subjectContent = ""
-                ;
+        String subjectContent = "";
+        long documentId = -1;
+
         while (cursor.moveToNext()) {
             int contentIndex = cursor.getColumnIndex(CourseDBHelper.SUBJECT_CONTENT);
+            int documentIndex = cursor.getColumnIndex(CourseDBHelper.SUBJECT_DOCUMENT_ID);
+
             subjectContent = cursor.getString(contentIndex);
+            documentId = cursor.getLong(documentIndex);
+        }
+        if (documentId != -1) {
+            updateCurrentSubjectToDocument(documentId, subjectId);
         }
 
         cursor.close();
@@ -95,13 +129,23 @@ public class CourseviewDBAdapter {
 
     public String getSubjectContent(String subjectTitle) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String columns[] = {CourseDBHelper.SUBJECT_CONTENT};
+        String columns[] = {CourseDBHelper.SUBJECT_CONTENT, CourseDBHelper.SUBJECT_DOCUMENT_ID, CourseDBHelper.SUBJECT_ID};
         Cursor cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns, CourseDBHelper.SUBJECT_TITLE + "='" + subjectTitle + "'", null, null, null, null);
-        String subjectContent = ""
-                ;
+        String subjectContent = "";
+        long documentId = -1;
+        long subjectId = -1;
+
         while (cursor.moveToNext()) {
             int contentIndex = cursor.getColumnIndex(CourseDBHelper.SUBJECT_CONTENT);
+            int documentIndex = cursor.getColumnIndex(CourseDBHelper.SUBJECT_DOCUMENT_ID);
+            int subjectIdIndex = cursor.getColumnIndex(CourseDBHelper.SUBJECT_ID);
+
             subjectContent = cursor.getString(contentIndex);
+            documentId = cursor.getLong(documentIndex);
+            subjectId = cursor.getLong(subjectIdIndex);
+        }
+        if (documentId != -1 && subjectId != -1) {
+            updateCurrentSubjectToDocument(documentId, subjectId);
         }
 
         cursor.close();
@@ -170,6 +214,7 @@ public class CourseviewDBAdapter {
         private static final String DOCUMENT_OWNER = "owner";
         private static final String DOCUMENT_CREATED = "created";
         private static final String DOCUMENT_MODIFIED = "modified";
+        private static final String DOCUMENT_CUR_SUBJECT_ID = "curSubId";
 
         private static final String SUBJECT_ID = "_id";
         private static final String SUBJECT_DOCUMENT_ID = "document";
@@ -183,6 +228,7 @@ public class CourseviewDBAdapter {
                                                                 DOCUMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                                                 DOCUMENT_TITLE + " VARCHAR(100), " +
                                                                 DOCUMENT_OWNER + " VARCHAR(20), " +
+                                                                DOCUMENT_CUR_SUBJECT_ID + " INTEGER DEFAULT -1, " +
                                                                 DOCUMENT_CREATED + " DATETIME, " +
                                                                 DOCUMENT_MODIFIED + " DATETIME);";
 
