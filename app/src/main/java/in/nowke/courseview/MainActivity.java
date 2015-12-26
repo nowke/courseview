@@ -176,8 +176,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         emptyDocLayout = (LinearLayout) findViewById(R.id.empty_doc_layout);
         subjectDrawer = (DrawerLayout) findViewById(R.id.drawer_layout_right);
 
-
-
         if (noOfDocuments == 0) {
             showEmptyView();
             return;
