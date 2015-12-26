@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -155,6 +156,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onPause() {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(Constants.SCROLL_X, markdownView.getScrollX());
+        editor.putInt(Constants.SCROLL_Y, markdownView.getScrollY());
+
+        editor.apply();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        markdownView.scrollTo(preferences.getInt(Constants.SCROLL_X, 0), preferences.getInt(Constants.SCROLL_Y, 0));
+    }
+
+    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -184,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         loadDocument(previousDocumentId);
+
     }
 
     private void showEmptyView() {
@@ -251,5 +269,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setMarkDownContent(String content) {
         markdownView.loadMarkdown(content, "file:///android_asset/classic.css");
+
     }
 }

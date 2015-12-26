@@ -7,4 +7,7 @@
     <string name="navigation_drawer_close">Close</string>
     <string name="empty_helper">Start by adding Documents. Click \'Add\' to see available documents</string>
     <string name="activity_document">Add Document</string>
+    <string name="menu_add_doc">Add Document</string>
+    <string name="menu_title_documents">Documents</string>
+    <string name="menu_title_actions">Actions</string>
 </resources>

@@ -13,4 +13,6 @@ public class Constants {
 
     public static final String PREFERENCES = "pref";
     public static final String PREVIOUS_DOC_PREF = "previousDocPref";
+    public static final String SCROLL_X = "scrollX";
+    public static final String SCROLL_Y = "scrollY";
 }

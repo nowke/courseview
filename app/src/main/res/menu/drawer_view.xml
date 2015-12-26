@@ -4,7 +4,7 @@
 
     <item
         android:orderInCategory="200"
-        android:title="Documents">
+        android:title="@string/menu_title_documents">
 
         <menu>
             <group android:id="@+id/groupDocuments">
@@ -16,7 +16,7 @@
 
     <item
         android:orderInCategory="300"
-        android:title="Actions">
+        android:title="@string/menu_title_actions">
 
         <menu>
             <group android:id="@+id/groupAdd">
@@ -24,7 +24,7 @@
                     android:id="@+id/menu_add"
                     android:checkable="false"
                     android:icon="@drawable/ic_add_box_black_24dp"
-                    android:title="Add" />
+                    android:title="@string/menu_add_doc" />
 
             </group>
         </menu>
