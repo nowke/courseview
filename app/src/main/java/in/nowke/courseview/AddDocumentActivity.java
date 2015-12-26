@@ -1,8 +1,12 @@
 package in.nowke.courseview;
 
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +40,9 @@ public class AddDocumentActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView documentListRecycler;
     private DocumentListAdapter adapter;
+    private CoordinatorLayout coordinatorLayout;
+    private SwipeRefreshLayout refreshLayout;
+    private LinearLayout emptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +76,28 @@ public class AddDocumentActivity extends AppCompatActivity {
         final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryText), PorterDuff.Mode.SRC_ATOP);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
+
     }
 
     private void setupRecycler() {
+        emptyView = (LinearLayout) findViewById(R.id.document_empty_view);
         documentListRecycler = (RecyclerView) findViewById(R.id.documentListRecycler);
         documentListRecycler.setLayoutManager(new LinearLayoutManager(this));
+        documentListRecycler.setAdapter(new DocumentListAdapter(this, new ArrayList<Document>(), emptyView));
+
+        // Refresh Layout
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        refreshLayout.setColorSchemeColors(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i("REF", "refresh items");
+                new ListAllDocuments().execute(Constants.DOCUMENTS_URL);
+            }
+        });
+
     }
 
     class ListAllDocuments extends AsyncTask<String, String, String> {
@@ -112,12 +137,17 @@ public class AddDocumentActivity extends AppCompatActivity {
                     documents.add(document);
                 }
 
-                adapter = new DocumentListAdapter(AddDocumentActivity.this, documents);
+                adapter = new DocumentListAdapter(AddDocumentActivity.this, documents, emptyView);
                 documentListRecycler.setAdapter(adapter);
+                refreshLayout.setRefreshing(false);
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Log.i("ERROR", "Internet connection error");
+                Snackbar.make(coordinatorLayout, "Check your internet connection!", Snackbar.LENGTH_LONG).show();
+                refreshLayout.setRefreshing(false);
+                documentListRecycler.setAdapter(new DocumentListAdapter(AddDocumentActivity.this, new ArrayList<Document>(), emptyView));
             }
+
         }
     }
 }

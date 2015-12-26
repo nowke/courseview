@@ -1,36 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_marginTop="8dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginBottom="0dp"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/documentTitle"
-        android:layout_width="wrap_content"
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Large Text"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/colorBlack" />
+        card_view:cardBackgroundColor="@color/colorWhiteGray"
+        card_view:cardElevation="2dp"
+        card_view:cardUseCompatPadding="true">
 
-    <TextView
-        android:id="@+id/documentOwner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="0dp">
 
-    <Button
-        android:id="@+id/documentDownload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:text="Download" />
+            <TextView
+                android:id="@+id/documentTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Large Text"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/documentOwner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Medium Text"
+                android:textColor="@color/colorGrayDark"
+                android:textSize="14sp" />
+
+
+            <Button
+                android:id="@+id/documentDownload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                style="?android:attr/borderlessButtonStyle"
+                android:drawableLeft="@drawable/ic_file_download_black_18dp"
+                android:text="  Download" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
     <TextView
         android:id="@+id/documentId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
 </LinearLayout>

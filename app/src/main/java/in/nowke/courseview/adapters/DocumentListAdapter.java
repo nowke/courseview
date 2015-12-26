@@ -2,6 +2,8 @@ package in.nowke.courseview.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,11 +26,14 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
     private LayoutInflater inflater;
 
     private List<Document> data;
+    private View emptyView;
 
-    public DocumentListAdapter(Context context, List<Document> data) {
+    public DocumentListAdapter(Context context, List<Document> data, View emptyView) {
         this.context = context;
         this.data = data;
         this.inflater = LayoutInflater.from(context);
+        this.emptyView = emptyView;
+        emptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -43,7 +48,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         Document current = data.get(position);
 
         holder.documentTitle.setText(current.title);
-        holder.documentOwner.setText(current.owner);
+        holder.documentOwner.setText(Html.fromHtml("Uploaded by <i><b>" + current.owner + "</b></i>"));
         holder.documentId.setText(String.valueOf(current.id));
     }
 

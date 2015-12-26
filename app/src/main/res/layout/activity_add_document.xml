@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="in.nowke.courseview.AddDocumentActivity">
+    android:fitsSystemWindows="true"
+    android:background="@color/colorGray">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,10 +16,35 @@
         android:title="@string/activity_document"
         app:contentInsetStart="72dp" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/documentListRecycler"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize" />
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_height="match_parent">
 
-</RelativeLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/documentListRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/document_empty_view"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textSize="48sp"
+            android:text="EMPTY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>
