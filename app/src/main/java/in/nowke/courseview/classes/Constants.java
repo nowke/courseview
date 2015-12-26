@@ -10,4 +10,7 @@ public class Constants {
     public static String getSubjectsForDocument(Integer documentId) {
         return DOCUMENTS_URL + documentId + "/";
     }
+
+    public static final String PREFERENCES = "pref";
+    public static final String PREVIOUS_DOC_PREF = "previousDocPref";
 }

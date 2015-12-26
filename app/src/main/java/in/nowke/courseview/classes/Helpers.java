@@ -1,5 +1,7 @@
 package in.nowke.courseview.classes;
 
+import android.content.SharedPreferences;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,5 +30,11 @@ public class Helpers {
             }
         }
         return sb.toString();
+    }
+
+    public static void setPreviousDocument(SharedPreferences preferences, long documentId) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong(Constants.PREVIOUS_DOC_PREF, documentId);
+        editor.apply();
     }
 }

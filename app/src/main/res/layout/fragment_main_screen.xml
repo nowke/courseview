@@ -21,55 +21,31 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
-    <!--
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:onClick="testDownload"
-                android:text="Click me"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:onClick="testDownload2"
-                android:text="Click me2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:onClick="testDownload3"
-                android:text="Click me3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:onClick="testDownload4"
-                android:text="Click me4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-
-
-        <us.feras.mdv.MarkdownView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/markdownView" />
-
-    </LinearLayout>-->
-
     <include layout="@layout/empty_docs" />
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout_right"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:visibility="gone">
+
+            <us.feras.mdv.MarkdownView
+                android:id="@+id/markdownView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+
+        <android.support.design.widget.NavigationView
+            android:layout_marginTop="-20dp"
+            android:id="@+id/nav_view_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:fitsSystemWindows="true" />
+
+    </android.support.v4.widget.DrawerLayout>
 
 
 </android.support.design.widget.CoordinatorLayout>

@@ -2,12 +2,15 @@ package in.nowke.courseview.adapters;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import in.nowke.courseview.model.Document;
@@ -49,8 +52,107 @@ public class CourseviewDBAdapter {
 
             db.insert(CourseDBHelper.TABLE_SUBJECT, null, contentValues);
         }
-
     }
+
+    public List<Subject> getAllSubjects(long documentId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.SUBJECT_ID, CourseDBHelper.SUBJECT_TITLE};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns, CourseDBHelper.SUBJECT_DOCUMENT_ID + "=" + documentId, null, null, null, null);
+
+        List<Subject> subjectList = new ArrayList<>();
+
+        while (cursor.moveToNext()) {
+            int index1 = cursor.getColumnIndex(CourseDBHelper.SUBJECT_ID);
+            int index2 = cursor.getColumnIndex(CourseDBHelper.SUBJECT_TITLE);
+
+            long subjectId = cursor.getLong(index1);
+            String subjectTitle = cursor.getString(index2);
+
+            Subject subject = new Subject();
+            subject.id = subjectId;
+            subject.title = subjectTitle;
+
+            subjectList.add(subject);
+        }
+        cursor.close();
+        return subjectList;
+    }
+
+    public String getSubjectContent(long subjectId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.SUBJECT_CONTENT};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns, CourseDBHelper.SUBJECT_ID + "=" + subjectId, null, null, null, null);
+        String subjectContent = ""
+                ;
+        while (cursor.moveToNext()) {
+            int contentIndex = cursor.getColumnIndex(CourseDBHelper.SUBJECT_CONTENT);
+            subjectContent = cursor.getString(contentIndex);
+        }
+
+        cursor.close();
+        return subjectContent;
+    }
+
+    public String getSubjectContent(String subjectTitle) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.SUBJECT_CONTENT};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns, CourseDBHelper.SUBJECT_TITLE + "='" + subjectTitle + "'", null, null, null, null);
+        String subjectContent = ""
+                ;
+        while (cursor.moveToNext()) {
+            int contentIndex = cursor.getColumnIndex(CourseDBHelper.SUBJECT_CONTENT);
+            subjectContent = cursor.getString(contentIndex);
+        }
+
+        cursor.close();
+        return subjectContent;
+    }
+
+    public List<Document> getDocumentList() {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.DOCUMENT_ID, CourseDBHelper.DOCUMENT_TITLE};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_DOCUMENT, columns, null, null, null, null, null);
+
+        List<Document> documents = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Document document = new Document();
+
+            int index1 = cursor.getColumnIndex(CourseDBHelper.DOCUMENT_ID);
+            int index2 = cursor.getColumnIndex(CourseDBHelper.DOCUMENT_TITLE);
+
+            long documentId = cursor.getLong(index1);
+            String documentTitle = cursor.getString(index2);
+
+            document.id = documentId;
+            document.title = documentTitle;
+
+            documents.add(document);
+        }
+        cursor.close();
+        return documents;
+    }
+
+    public long getDocumentCount() {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        return DatabaseUtils.queryNumEntries(db, CourseDBHelper.TABLE_DOCUMENT);
+    }
+
+    public Document getDocument(String documentTitle) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.DOCUMENT_ID};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_DOCUMENT, columns, CourseDBHelper.DOCUMENT_TITLE + "='" + documentTitle + "'", null, null, null, null);
+
+        Document document = new Document();
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(CourseDBHelper.DOCUMENT_ID);
+            long documentId = cursor.getLong(index);
+            document.id = documentId;
+        }
+        cursor.close();
+        return document;
+    }
+
+
 
     static class CourseDBHelper extends SQLiteOpenHelper  {
 

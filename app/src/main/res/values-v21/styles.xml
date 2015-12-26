@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+
+    <style name="AppTheme" parent="AppTheme.Base">
+        <item name="android:actionModeShareDrawable">@drawable/ic_share_black_24dp</item>
+        <item name="android:actionModeWebSearchDrawable">@drawable/ic_search_black_24dp</item>
+        <item name="android:actionModeCloseDrawable">@drawable/ic_arrow_back_black_24dp</item>
+        <item name="android:actionModeBackground">@color/colorWhite</item>
+        <item name="android:actionModeSelectAllDrawable">@drawable/ic_select_all_black_24dp</item>
+        <item name="android:actionModeCopyDrawable">@drawable/ic_content_copy_black_24dp</item>
+
+    </style>
+</resources>

@@ -2,21 +2,33 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:id="@+id/grp1">
-        <item
-            android:id="@+id/nav_doc_1"
-            android:checkable="true"
-            android:checked="true"
-            android:title="@string/nav_home" />
-        <item
-            android:id="@+id/nav_doc_2"
-            android:checkable="true"
-            android:title="@string/nav_doc_2" />
-        <item
-            android:id="@+id/nav_add"
-            android:checkable="true"
-            android:title="@string/nav_add" />
+    <item
+        android:orderInCategory="200"
+        android:title="Documents" >
 
-    </group>
+        <menu>
+            <group android:id="@+id/groupDocuments">
+
+            </group>
+        </menu>
+
+    </item>
+
+    <item
+        android:orderInCategory="300"
+        android:title="Actions">
+
+        <menu>
+            <group android:id="@+id/groupAdd">
+                <item
+                    android:id="@+id/menu_add"
+                    android:title="Add"
+                    android:checkable="false"
+                    android:icon="@drawable/ic_add_box_black_24dp" />
+
+            </group>
+        </menu>
+
+    </item>
 
 </menu>
