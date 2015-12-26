@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:visibility="gone"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:visibility="gone">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -24,9 +24,9 @@
 
     <Button
         style="@style/MyApp.Button.Primary.Red"
-        android:onClick="addDocument"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="addDocument"
         android:paddingBottom="8dp"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"

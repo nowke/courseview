@@ -4,7 +4,7 @@
 
     <item
         android:orderInCategory="200"
-        android:title="Documents" >
+        android:title="Documents">
 
         <menu>
             <group android:id="@+id/groupDocuments">
@@ -22,9 +22,9 @@
             <group android:id="@+id/groupAdd">
                 <item
                     android:id="@+id/menu_add"
-                    android:title="Add"
                     android:checkable="false"
-                    android:icon="@drawable/ic_add_box_black_24dp" />
+                    android:icon="@drawable/ic_add_box_black_24dp"
+                    android:title="Add" />
 
             </group>
         </menu>
