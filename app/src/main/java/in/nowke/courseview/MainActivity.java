@@ -80,6 +80,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_DOCUMENT_UPDATE) {
+            if (resultCode == Constants.RESULT_DOCUMENT_UPDATE) {
+                boolean isUpdate = data.getBooleanExtra(Constants.INTENT_UPDATE, false);
+                if (isUpdate) {
+                    noOfDocuments = helper.getDocumentCount();
+                    populateNavigation();
+                    loadDocumentOrShowEmpty();
+                }
+            }
+        }
+    }
+
     private void getPreviousDocumentId() {
         preferences = getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
         previousDocumentId = preferences.getLong(Constants.PREVIOUS_DOC_PREF, -1);
@@ -97,11 +111,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        populateNavigation();
+    }
+
+    private void populateNavigation() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.getMenu().clear();
+        navigationView.inflateMenu(R.menu.drawer_view);
         navigationView.setNavigationItemSelectedListener(this);
         if (noOfDocuments > 0) {
             navigationView.getMenu().add(R.id.groupDocuments, Menu.NONE, Menu.NONE, "Documents").setCheckable(false).setEnabled(false);
         }
+
         List<Document> documents = helper.getDocumentList();
         for (int i=0; i<documents.size(); i++) {
             Document document = documents.get(i);
@@ -127,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (item.getItemId() == R.id.menu_add) {
             drawer.closeDrawers();
-            startActivity(new Intent(this, AddDocumentActivity.class));
+            callAddDocumentActivity();
             return true;
         }
 
@@ -185,7 +206,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void addDocument(View view) {
-        startActivity(new Intent(this, AddDocumentActivity.class));
+        callAddDocumentActivity();
+    }
+
+    private void callAddDocumentActivity() {
+        Intent intent = new Intent(this, AddDocumentActivity.class);
+        startActivityForResult(intent,  Constants.REQUEST_DOCUMENT_UPDATE);
     }
 
     private void loadDocumentOrShowEmpty() {
@@ -269,6 +295,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setMarkDownContent(String content) {
         markdownView.loadMarkdown(content, "file:///android_asset/classic.css");
-
     }
 }

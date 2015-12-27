@@ -15,4 +15,10 @@ public class Constants {
     public static final String PREVIOUS_DOC_PREF = "previousDocPref";
     public static final String SCROLL_X = "scrollX";
     public static final String SCROLL_Y = "scrollY";
+
+    public static final int REQUEST_DOCUMENT_UPDATE = 1;
+    public static final int RESULT_DOCUMENT_UPDATE = 2;
+    public static final String ACTION_INTENT_DOCUMENT = "in.nowke.courseview.documentupdate";
+    public static final String INTENT_UPDATE = "update";
+
 }

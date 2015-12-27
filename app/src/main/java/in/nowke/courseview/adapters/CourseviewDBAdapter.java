@@ -108,24 +108,27 @@ public class CourseviewDBAdapter {
 
     public String getSubjectContent(long subjectId) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String columns[] = {CourseDBHelper.SUBJECT_CONTENT, CourseDBHelper.SUBJECT_DOCUMENT_ID};
+        String columns[] = {CourseDBHelper.SUBJECT_CONTENT, CourseDBHelper.SUBJECT_DOCUMENT_ID, CourseDBHelper.SUBJECT_TITLE};
         Cursor cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns, CourseDBHelper.SUBJECT_ID + "=" + subjectId, null, null, null, null);
         String subjectContent = "";
         long documentId = -1;
-
+        String subjectTitle = "";
         while (cursor.moveToNext()) {
             int contentIndex = cursor.getColumnIndex(CourseDBHelper.SUBJECT_CONTENT);
             int documentIndex = cursor.getColumnIndex(CourseDBHelper.SUBJECT_DOCUMENT_ID);
+            int subjectTitleIndex = cursor.getColumnIndex(CourseDBHelper.SUBJECT_TITLE);
 
             subjectContent = cursor.getString(contentIndex);
             documentId = cursor.getLong(documentIndex);
+            subjectTitle = cursor.getString(subjectTitleIndex);
         }
         if (documentId != -1) {
             updateCurrentSubjectToDocument(documentId, subjectId);
         }
 
         cursor.close();
-        return subjectContent;
+        String contentStr = "# " + subjectTitle + "\r\n" + subjectContent;
+        return contentStr;
     }
 
     public String getSubjectContent(String subjectTitle) {
@@ -150,7 +153,8 @@ public class CourseviewDBAdapter {
         }
 
         cursor.close();
-        return subjectContent;
+        String contentStr = "# " + subjectTitle + "\r\n" + subjectContent;
+        return contentStr;
     }
 
     public List<Document> getDocumentList() {

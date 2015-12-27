@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/colorAccent"
     android:layout_height="192dp">
 
-</LinearLayout>
+    <TextView
+        android:layout_margin="16dp"
+        android:textSize="28sp"
+        android:textColor="@color/colorWhiteGray"
+        android:layout_alignParentBottom="true"
+        android:text="Courseview"
+        android:layout_gravity="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

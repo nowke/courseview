@@ -1,11 +1,16 @@
 package in.nowke.courseview;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,6 +52,8 @@ public class AddDocumentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        IntentFilter filter = new IntentFilter(Constants.ACTION_INTENT_DOCUMENT);
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
         setContentView(R.layout.activity_add_document);
 
         setupToolbar();
@@ -94,6 +101,30 @@ public class AddDocumentActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    protected BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Constants.ACTION_INTENT_DOCUMENT.equals(intent.getAction())) {
+                boolean isUpdated = intent.getBooleanExtra(Constants.INTENT_UPDATE, false);
+                if (isUpdated) {
+                    setResultForActivity();
+                }
+            }
+        }
+    };
+
+    public void setResultForActivity() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra(Constants.INTENT_UPDATE, true);
+        setResult(Constants.RESULT_DOCUMENT_UPDATE, resultIntent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onDestroy();
     }
 
     class ListAllDocuments extends AsyncTask<String, String, String> {

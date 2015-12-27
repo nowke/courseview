@@ -1,6 +1,8 @@
 package in.nowke.courseview.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.util.Log;
@@ -13,7 +15,9 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import in.nowke.courseview.AddDocumentActivity;
 import in.nowke.courseview.R;
+import in.nowke.courseview.classes.Constants;
 import in.nowke.courseview.classes.DocumentDownloaderTask;
 import in.nowke.courseview.classes.OnTaskCompleted;
 import in.nowke.courseview.model.Document;
@@ -66,11 +70,6 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         return data.size();
     }
 
-    private void completeDownload(DocumentListViewHolder holder) {
-        holder.downloadButton.setVisibility(View.GONE);
-        holder.documentAvailable.setVisibility(View.VISIBLE);
-    }
-
     class DocumentListViewHolder extends RecyclerView.ViewHolder {
 
         TextView documentTitle;
@@ -97,8 +96,12 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
                     new DocumentDownloaderTask(context, new OnTaskCompleted() {
                         @Override
                         public void onTaskCompleted() {
+                            // WARNING: This executes even if not downloaded properly !!
                             downloadButton.setVisibility(View.GONE);
                             documentAvailable.setVisibility(View.VISIBLE);
+                            Intent intent = new Intent(Constants.ACTION_INTENT_DOCUMENT);
+                            intent.putExtra(Constants.INTENT_UPDATE, true);
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
                         }
                     }).execute(docId);
                 }
