@@ -26,6 +26,12 @@
                     android:icon="@drawable/ic_add_box_black_24dp"
                     android:title="@string/menu_add_doc" />
 
+                <item
+                    android:id="@+id/menu_edit_subjects"
+                    android:checkable="false"
+                    android:icon="@drawable/ic_edit_black_24dp"
+                    android:title="@string/menu_edit_sub" />
+
             </group>
         </menu>
 

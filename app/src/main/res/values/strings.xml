@@ -15,4 +15,6 @@
     <string name="dialog_title_download_failed">Download failed</string>
     <string name="desc_download_failed">Document couldn\'t be downloaded! Try again.</string>
     <string name="button_ok">OK</string>
+    <string name="menu_edit_sub">Edit Subjects</string>
+    <string name="activity_edit_subject">Select Document</string>
 </resources>

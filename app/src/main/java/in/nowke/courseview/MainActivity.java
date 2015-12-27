@@ -152,6 +152,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return true;
         }
 
+        if (item.getItemId() == R.id.menu_edit_subjects) {
+            drawer.closeDrawers();
+            startActivity(new Intent(this, EditSubjectActivity.class));
+            return true;
+        }
+
         item.setChecked(true);
         drawer.closeDrawers();
 

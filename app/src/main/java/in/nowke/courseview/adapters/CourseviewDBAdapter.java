@@ -159,7 +159,7 @@ public class CourseviewDBAdapter {
 
     public List<Document> getDocumentList() {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String columns[] = {CourseDBHelper.DOCUMENT_ID, CourseDBHelper.DOCUMENT_TITLE};
+        String columns[] = {CourseDBHelper.DOCUMENT_ID, CourseDBHelper.DOCUMENT_TITLE, CourseDBHelper.DOCUMENT_OWNER};
         Cursor cursor = db.query(CourseDBHelper.TABLE_DOCUMENT, columns, null, null, null, null, null);
 
         List<Document> documents = new ArrayList<>();
@@ -168,12 +168,15 @@ public class CourseviewDBAdapter {
 
             int index1 = cursor.getColumnIndex(CourseDBHelper.DOCUMENT_ID);
             int index2 = cursor.getColumnIndex(CourseDBHelper.DOCUMENT_TITLE);
+            int index3 = cursor.getColumnIndex(CourseDBHelper.DOCUMENT_OWNER);
 
             long documentId = cursor.getLong(index1);
             String documentTitle = cursor.getString(index2);
+            String documentOwner = cursor.getString(index3);
 
             document.id = documentId;
             document.title = documentTitle;
+            document.owner = documentOwner;
 
             documents.add(document);
         }
