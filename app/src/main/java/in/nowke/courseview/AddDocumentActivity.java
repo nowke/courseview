@@ -69,16 +69,12 @@ public class AddDocumentActivity extends AppCompatActivity {
     private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Add Document");
-        toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryText), PorterDuff.Mode.SRC_ATOP);
-        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinator);
-
     }
 
     private void setupRecycler() {
@@ -130,7 +126,7 @@ public class AddDocumentActivity extends AppCompatActivity {
                     Document document = new Document();
                     JSONObject documentObj = documentList.getJSONObject(i);
 
-                    document.id = documentObj.getInt("id");
+                    document.originalId = documentObj.getInt("id");
                     document.title = documentObj.getString("title");
                     document.owner = documentObj.getString("owner");
 

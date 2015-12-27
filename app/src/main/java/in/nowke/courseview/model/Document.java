@@ -8,4 +8,5 @@ public class Document {
     public String owner;
     public long id;
     public long curSubId;
+    public long originalId;
 }

@@ -18,4 +18,9 @@
         <item name="android:theme">@style/Theme.MyApp.Button.Primary.Red</item>
     </style>
 
+    <style name="toolbar_theme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:textColorSecondary">@color/colorWhite</item>
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+    </style>
+
 </resources>

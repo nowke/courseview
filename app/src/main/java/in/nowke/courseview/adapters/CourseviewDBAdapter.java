@@ -33,6 +33,7 @@ public class CourseviewDBAdapter {
         ContentValues contentValues = new ContentValues();
         contentValues.put(CourseDBHelper.DOCUMENT_TITLE, document.title);
         contentValues.put(CourseDBHelper.DOCUMENT_OWNER, document.owner);
+        contentValues.put(CourseDBHelper.DOCUMENT_ORIGINAL_ID, document.originalId);
 
         long id = db.insert(CourseDBHelper.TABLE_DOCUMENT, null, contentValues);
 
@@ -196,6 +197,17 @@ public class CourseviewDBAdapter {
         return document;
     }
 
+    public boolean isDocumentExists(int originalId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.DOCUMENT_ID};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_DOCUMENT, columns, CourseDBHelper.DOCUMENT_ORIGINAL_ID + "=" + originalId, null, null, null, null);
+
+        boolean hasEntry = cursor.moveToFirst();
+        cursor.close();
+
+        return hasEntry;
+    }
+
 
 
     static class CourseDBHelper extends SQLiteOpenHelper  {
@@ -210,6 +222,7 @@ public class CourseviewDBAdapter {
 
         // COLUMNS
         private static final String DOCUMENT_ID = "_id";
+        private static final String DOCUMENT_ORIGINAL_ID = "uid";
         private static final String DOCUMENT_TITLE = "title";
         private static final String DOCUMENT_OWNER = "owner";
         private static final String DOCUMENT_CREATED = "created";
@@ -226,6 +239,7 @@ public class CourseviewDBAdapter {
         // CREATE DB STATEMENTS
         private static final String CREATE_DOCUMENT_TABLE = "CREATE TABLE " + TABLE_DOCUMENT + " (" +
                                                                 DOCUMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                                                DOCUMENT_ORIGINAL_ID + " INTEGER UNIQUE, " +
                                                                 DOCUMENT_TITLE + " VARCHAR(100), " +
                                                                 DOCUMENT_OWNER + " VARCHAR(20), " +
                                                                 DOCUMENT_CUR_SUBJECT_ID + " INTEGER DEFAULT -1, " +

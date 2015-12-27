@@ -32,9 +32,11 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
 
     private ProgressDialog progressDialog;
     private Context context;
+    private OnTaskCompleted listener;
 
-    public DocumentDownloaderTask(Context context) {
+    public DocumentDownloaderTask(Context context, OnTaskCompleted listener) {
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
@@ -93,6 +95,7 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
 
             // Create document
             Document document = new Document();
+            document.originalId = documentListWrapper.getInt("id");
             document.title = documentListWrapper.getString("title");
             document.owner = documentListWrapper.getString("owner");
             long documentId = helper.addDocument(document);
@@ -101,6 +104,7 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
             long curSubId = helper.addSubjects(subjects, documentId);
             helper.updateCurrentSubjectToDocument(documentId, curSubId);
 
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -108,5 +112,6 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
+        listener.onTaskCompleted();
     }
 }

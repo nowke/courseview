@@ -15,6 +15,7 @@ import java.util.List;
 
 import in.nowke.courseview.R;
 import in.nowke.courseview.classes.DocumentDownloaderTask;
+import in.nowke.courseview.classes.OnTaskCompleted;
 import in.nowke.courseview.model.Document;
 
 /**
@@ -27,6 +28,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
     private List<Document> data;
     private View emptyView;
+    private CourseviewDBAdapter helper;
 
     public DocumentListAdapter(Context context, List<Document> data, View emptyView) {
         this.context = context;
@@ -34,6 +36,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         this.inflater = LayoutInflater.from(context);
         this.emptyView = emptyView;
         emptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        this.helper = new CourseviewDBAdapter(context);
     }
 
     @Override
@@ -49,12 +52,23 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
         holder.documentTitle.setText(current.title);
         holder.documentOwner.setText(Html.fromHtml("Uploaded by <i><b>" + current.owner + "</b></i>"));
-        holder.documentId.setText(String.valueOf(current.id));
+        holder.documentId.setText(String.valueOf(current.originalId));
+
+        // Check if document exists
+        if (helper.isDocumentExists((int) current.originalId)) {
+            holder.downloadButton.setVisibility(View.GONE);
+            holder.documentAvailable.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    private void completeDownload(DocumentListViewHolder holder) {
+        holder.downloadButton.setVisibility(View.GONE);
+        holder.documentAvailable.setVisibility(View.VISIBLE);
     }
 
     class DocumentListViewHolder extends RecyclerView.ViewHolder {
@@ -64,6 +78,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
         TextView documentId;
 
         Button downloadButton;
+        TextView documentAvailable;
 
         public DocumentListViewHolder(View itemView) {
             super(itemView);
@@ -73,12 +88,19 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
             documentId = (TextView) itemView.findViewById(R.id.documentId);
 
             downloadButton = (Button) itemView.findViewById(R.id.documentDownload);
+            documentAvailable = (TextView) itemView.findViewById(R.id.documentAvailable);
 
             downloadButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int docId = Integer.parseInt(documentId.getText().toString());
-                    new DocumentDownloaderTask(context).execute(docId);
+                    new DocumentDownloaderTask(context, new OnTaskCompleted() {
+                        @Override
+                        public void onTaskCompleted() {
+                            downloadButton.setVisibility(View.GONE);
+                            documentAvailable.setVisibility(View.VISIBLE);
+                        }
+                    }).execute(docId);
                 }
             });
         }

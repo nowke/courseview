@@ -5,8 +5,8 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@color/colorGray">
+    android:background="@color/colorGray"
+    android:fitsSystemWindows="true">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -14,13 +14,15 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary"
         android:title="@string/activity_document"
-        app:contentInsetStart="72dp" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:contentInsetStart="72dp"
+        app:theme="@style/toolbar_theme" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/documentListRecycler"
@@ -31,19 +33,19 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
-        android:orientation="vertical"
         android:id="@+id/document_empty_view"
-        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <TextView
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textSize="48sp"
-            android:text="EMPTY"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="EMPTY"
+            android:textSize="48sp" />
 
     </LinearLayout>
 
