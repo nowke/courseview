@@ -20,7 +20,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +51,8 @@ public class AddDocumentActivity extends AppCompatActivity {
     private SwipeRefreshLayout refreshLayout;
     private LinearLayout emptyView;
 
+    private ProgressBar documentProgressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +60,7 @@ public class AddDocumentActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
         setContentView(R.layout.activity_add_document);
 
+        setupProgressBar();
         setupToolbar();
         setupRecycler();
         new ListAllDocuments().execute(Constants.DOCUMENTS_URL);
@@ -73,6 +78,11 @@ public class AddDocumentActivity extends AppCompatActivity {
         }
     }
 
+    private void setupProgressBar() {
+        documentProgressBar = (ProgressBar) findViewById(R.id.progressBarDocument);
+        documentProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+    }
+
     private void setupToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Add Document");
@@ -88,7 +98,6 @@ public class AddDocumentActivity extends AppCompatActivity {
         emptyView = (LinearLayout) findViewById(R.id.document_empty_view);
         documentListRecycler = (RecyclerView) findViewById(R.id.documentListRecycler);
         documentListRecycler.setLayoutManager(new LinearLayoutManager(this));
-        documentListRecycler.setAdapter(new DocumentListAdapter(this, new ArrayList<Document>(), emptyView));
 
         // Refresh Layout
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
@@ -130,6 +139,14 @@ public class AddDocumentActivity extends AppCompatActivity {
     class ListAllDocuments extends AsyncTask<String, String, String> {
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (!refreshLayout.isRefreshing()) {
+                documentProgressBar.setVisibility(View.VISIBLE);
+            }
+        }
+
+        @Override
         protected String doInBackground(String... url) {
             try {
                 URL document_url = new URL(url[0]);
@@ -163,6 +180,7 @@ public class AddDocumentActivity extends AppCompatActivity {
 
                     documents.add(document);
                 }
+                documentProgressBar.setVisibility(View.GONE);
 
                 adapter = new DocumentListAdapter(AddDocumentActivity.this, documents, emptyView);
                 documentListRecycler.setAdapter(adapter);
@@ -173,6 +191,7 @@ public class AddDocumentActivity extends AppCompatActivity {
                 Snackbar.make(coordinatorLayout, "Check your internet connection!", Snackbar.LENGTH_LONG).show();
                 refreshLayout.setRefreshing(false);
                 documentListRecycler.setAdapter(new DocumentListAdapter(AddDocumentActivity.this, new ArrayList<Document>(), emptyView));
+                documentProgressBar.setVisibility(View.GONE);
             }
 
         }

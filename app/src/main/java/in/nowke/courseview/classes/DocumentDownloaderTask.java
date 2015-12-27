@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.nowke.courseview.AddDocumentActivity;
+import in.nowke.courseview.R;
 import in.nowke.courseview.adapters.CourseviewDBAdapter;
 import in.nowke.courseview.model.Document;
 import in.nowke.courseview.model.Subject;
@@ -33,6 +34,7 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
     private ProgressDialog progressDialog;
     private Context context;
     private OnTaskCompleted listener;
+    private AlertDialog.Builder downloadFailedDialog;
 
     public DocumentDownloaderTask(Context context, OnTaskCompleted listener) {
         this.context = context;
@@ -48,6 +50,9 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
+
+        downloadFailedDialog = new AlertDialog.Builder(context);
+        downloadFailedDialog.setTitle(context.getResources().getString(R.string.dialog_title_download_failed));
     }
 
     protected String doInBackground(Integer... documentId) {
@@ -105,10 +110,21 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
             helper.updateCurrentSubjectToDocument(documentId, curSubId);
 
 
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
+
+            // Show "Download failed" dialog
+            downloadFailedDialog.setMessage(R.string.desc_download_failed);
+            downloadFailedDialog.setPositiveButton(R.string.button_ok, null);
+            AlertDialog alert = downloadFailedDialog.create();
+            alert.show();
+            return;
         }
 
+        // Successfully downloaded
         if (progressDialog != null) {
             progressDialog.dismiss();
         }

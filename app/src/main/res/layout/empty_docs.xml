@@ -11,26 +11,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:contentDescription="Document Icon"
+        android:contentDescription="@string/desc_doc_icon"
         android:src="@drawable/image_doc" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:padding="8dp"
         android:text="@string/empty_helper"
-        android:textAlignment="center"
         android:textSize="20sp" />
 
     <Button
         style="@style/MyApp.Button.Primary.Red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:onClick="addDocument"
-        android:paddingBottom="8dp"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
-        android:paddingTop="8dp"
-        android:text="Add" />
+        android:paddingBottom="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="16dp"
+        android:text="@string/menu_add_doc"
+        android:textSize="18sp" />
 
 </LinearLayout>

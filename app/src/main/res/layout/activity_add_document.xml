@@ -33,19 +33,44 @@
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/document_empty_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/desc_doc_icon"
+            android:src="@drawable/image_doc" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="EMPTY"
-            android:textSize="48sp" />
+            android:text="@string/desc_no_docs"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:visibility="gone"
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBarDocument"
+            android:indeterminate="true" />
 
     </LinearLayout>
 

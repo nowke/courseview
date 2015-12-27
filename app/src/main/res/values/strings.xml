@@ -5,9 +5,14 @@
     <string name="nav_add">Add</string>
     <string name="navigation_drawer_open">Open</string>
     <string name="navigation_drawer_close">Close</string>
-    <string name="empty_helper">Start by adding Documents. Click \'Add\' to see available documents</string>
+    <string name="empty_helper">Consider adding some documents from Online!</string>
     <string name="activity_document">Add Document</string>
     <string name="menu_add_doc">Add Document</string>
     <string name="menu_title_documents">Documents</string>
     <string name="menu_title_actions">Actions</string>
+    <string name="desc_doc_icon">Document Icon</string>
+    <string name="desc_no_docs">No documents found!\n Swipe down to check again</string>
+    <string name="dialog_title_download_failed">Download failed</string>
+    <string name="desc_download_failed">Document couldn\'t be downloaded! Try again.</string>
+    <string name="button_ok">OK</string>
 </resources>
