@@ -15,6 +15,9 @@
     <string name="dialog_title_download_failed">Download failed</string>
     <string name="desc_download_failed">Document couldn\'t be downloaded! Try again.</string>
     <string name="button_ok">OK</string>
+    <string name="button_cancel">Cancel</string>
     <string name="menu_edit_sub">Edit Subjects</string>
     <string name="activity_edit_subject">Select Document</string>
+    <string name="dialog_title_subjects">Subjects</string>
+    <string name="dialog_select_at_lease_one">Select at least one subject to display!</string>
 </resources>

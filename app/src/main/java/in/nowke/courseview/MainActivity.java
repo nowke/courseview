@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void loadDocument(long documentId) {
-        List<Subject> documentSubjects = helper.getAllSubjects(documentId);
+        List<Subject> documentSubjects = helper.getAllSubjects(documentId, false);
         long curSubjectId = helper.getCurrentSubjectId(documentId);
         String mdStr;
         if (curSubjectId != -1) {

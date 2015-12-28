@@ -9,4 +9,5 @@ public class Subject {
     public String code;
     public String title;
     public String content;
+    public Boolean isDisplayed;
 }

@@ -42,6 +42,7 @@ public class DocumentEditListAdapter extends RecyclerView.Adapter<DocumentEditLi
 
         holder.documentTitle.setText(current.title);
         holder.documentOwner.setText(Html.fromHtml("Uploaded by <i><b>" + current.owner + "</b></i>"));
+        holder.documentId.setText(String.valueOf(current.id));
         holder.documentSubjects.setText("Displaying 5 of 6 documents");
 
     }

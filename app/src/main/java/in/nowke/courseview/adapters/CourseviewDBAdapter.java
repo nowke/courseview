@@ -62,23 +62,35 @@ public class CourseviewDBAdapter {
         return curSubId;
     }
 
-    public List<Subject> getAllSubjects(long documentId) {
+    public List<Subject> getAllSubjects(long documentId, boolean includeNotDisplayed) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String columns[] = {CourseDBHelper.SUBJECT_ID, CourseDBHelper.SUBJECT_TITLE};
-        Cursor cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns, CourseDBHelper.SUBJECT_DOCUMENT_ID + "=" + documentId, null, null, null, null);
+        String columns[] = {CourseDBHelper.SUBJECT_ID, CourseDBHelper.SUBJECT_TITLE, CourseDBHelper.SUBJECT_IS_DISPLAYED};
+        Cursor cursor;
+        if (includeNotDisplayed) {
+            cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns, CourseDBHelper.SUBJECT_DOCUMENT_ID + "=" + documentId, null, null, null, null);
+        } else {
+            cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns,
+                    CourseDBHelper.SUBJECT_DOCUMENT_ID + "=" + documentId + " AND " + CourseDBHelper.SUBJECT_IS_DISPLAYED + "=1",
+                    null, null, null, null);
+        }
 
         List<Subject> subjectList = new ArrayList<>();
 
         while (cursor.moveToNext()) {
             int index1 = cursor.getColumnIndex(CourseDBHelper.SUBJECT_ID);
             int index2 = cursor.getColumnIndex(CourseDBHelper.SUBJECT_TITLE);
+            int index3 = cursor.getColumnIndex(CourseDBHelper.SUBJECT_IS_DISPLAYED);
 
             long subjectId = cursor.getLong(index1);
             String subjectTitle = cursor.getString(index2);
+            int subjectDisplayedInt = cursor.getInt(index3);
+            boolean subjectDisplayed = (subjectDisplayedInt != 0);
+
 
             Subject subject = new Subject();
             subject.id = subjectId;
             subject.title = subjectTitle;
+            subject.isDisplayed = subjectDisplayed;
 
             subjectList.add(subject);
         }
@@ -215,7 +227,52 @@ public class CourseviewDBAdapter {
         return hasEntry;
     }
 
+    public long getDocumentIdFromSubject(long subjectId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.SUBJECT_DOCUMENT_ID};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns, CourseDBHelper.SUBJECT_ID + "=" + subjectId, null, null, null, null);
+        long documentId = -1;
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(CourseDBHelper.SUBJECT_DOCUMENT_ID);
+            documentId = cursor.getLong(index);
+        }
+        cursor.close();
+        return documentId;
+    }
 
+    public long getDisplayingSubjectId(long documentId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.SUBJECT_ID};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_SUBJECT, columns,
+                                 CourseDBHelper.SUBJECT_DOCUMENT_ID + "=" + documentId + " AND " + CourseDBHelper.SUBJECT_IS_DISPLAYED + "=1 ",
+                                 null, null, null, null);
+        long subjectId = -1;
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(CourseDBHelper.SUBJECT_ID);
+            subjectId = cursor.getLong(index);
+        }
+        cursor.close();
+        return subjectId;
+    }
+
+    public void changeDisplaySubject(long subjectId, boolean isDisplayed) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(CourseDBHelper.SUBJECT_IS_DISPLAYED, isDisplayed);
+        db.update(CourseDBHelper.TABLE_SUBJECT, contentValues, CourseDBHelper.SUBJECT_ID + "=" + subjectId, null);
+
+        if (!isDisplayed) {
+            long documentId = getDocumentIdFromSubject(subjectId);
+            long curSubjectId = getCurrentSubjectId(documentId);
+//            Log.i("LOL", "documentId: " + documentId);
+//            Log.i("LOL", "curSubjectId: " + curSubjectId);
+            if (curSubjectId == subjectId) {
+                long displayingSubId = getDisplayingSubjectId(documentId);
+//                Log.i("LOL", "displayingSUbId: " + displayingSubId);
+                updateCurrentSubjectToDocument(documentId, displayingSubId);
+            }
+        }
+    }
 
     static class CourseDBHelper extends SQLiteOpenHelper  {
 
@@ -241,7 +298,9 @@ public class CourseviewDBAdapter {
         private static final String SUBJECT_TITLE = "title";
         private static final String SUBJECT_CODE = "code";
         private static final String SUBJECT_CREDITS = "credits";
+        private static final String SUBJECT_IS_DISPLAYED = "isDisplayed";
         private static final String SUBJECT_CONTENT = "content";
+
 
         // CREATE DB STATEMENTS
         private static final String CREATE_DOCUMENT_TABLE = "CREATE TABLE " + TABLE_DOCUMENT + " (" +
@@ -259,6 +318,7 @@ public class CourseviewDBAdapter {
                                                                 SUBJECT_TITLE + " VARCHAR(100), " +
                                                                 SUBJECT_CODE + " VARCHAR(15), " +
                                                                 SUBJECT_CREDITS + " DOUBLE, " +
+                                                                SUBJECT_IS_DISPLAYED + " BOOLEAN NOT NULL DEFAULT 1, " +
                                                                 SUBJECT_CONTENT + " TEXT, " +
                                                                 "FOREIGN KEY (" + SUBJECT_DOCUMENT_ID + ") REFERENCES " +
                                                                     TABLE_DOCUMENT + "(" + DOCUMENT_ID + "));";
