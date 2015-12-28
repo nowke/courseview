@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (resultCode == Constants.RESULT_DOCUMENT_UPDATE) {
                 boolean isUpdate = data.getBooleanExtra(Constants.INTENT_UPDATE, false);
                 if (isUpdate) {
+                    getPreviousDocumentId();
                     noOfDocuments = helper.getDocumentCount();
                     populateNavigation();
                     loadDocumentOrShowEmpty();
@@ -154,7 +155,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (item.getItemId() == R.id.menu_edit_subjects) {
             drawer.closeDrawers();
-            startActivity(new Intent(this, EditSubjectActivity.class));
+            Intent intent = new Intent(this, EditSubjectActivity.class);
+            startActivityForResult(intent, Constants.REQUEST_DOCUMENT_UPDATE);
             return true;
         }
 

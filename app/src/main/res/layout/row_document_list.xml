@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:drawableLeft="@drawable/ic_file_download_black_18dp"
-                android:text="  Download" />
+                android:text="@string/btn_download" />
 
             <TextView
                 android:id="@+id/documentAvailable"
@@ -58,7 +58,7 @@
                 android:textColor="@color/colorBlack"
                 android:textAllCaps="true"
                 android:padding="16dp"
-                android:text="  Saved"
+                android:text="@string/doc_saved"
                 android:layout_gravity="end"
                 android:drawableLeft="@drawable/ic_done_black_18dp"
                 android:layout_width="wrap_content"
@@ -73,5 +73,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/documentExistingId"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

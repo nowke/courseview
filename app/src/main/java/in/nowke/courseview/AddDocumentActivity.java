@@ -177,6 +177,7 @@ public class AddDocumentActivity extends AppCompatActivity {
                     document.originalId = documentObj.getInt("id");
                     document.title = documentObj.getString("title");
                     document.owner = documentObj.getString("owner");
+                    document.modified = documentObj.getString("modified");
 
                     documents.add(document);
                 }

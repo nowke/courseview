@@ -20,4 +20,7 @@
     <string name="activity_edit_subject">Select Document</string>
     <string name="dialog_title_subjects">Subjects</string>
     <string name="dialog_select_at_lease_one">Select at least one subject to display!</string>
+    <string name="btn_download">\u00A0\u00A0Download</string>
+    <string name="doc_saved">\u00A0\u00A0Saved</string>
+    <string name="btn_update">\u00A0\u00A0Update</string>
 </resources>

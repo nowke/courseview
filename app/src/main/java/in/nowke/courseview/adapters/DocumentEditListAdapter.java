@@ -43,8 +43,14 @@ public class DocumentEditListAdapter extends RecyclerView.Adapter<DocumentEditLi
         holder.documentTitle.setText(current.title);
         holder.documentOwner.setText(Html.fromHtml("Uploaded by <i><b>" + current.owner + "</b></i>"));
         holder.documentId.setText(String.valueOf(current.id));
-        holder.documentSubjects.setText("Displaying 5 of 6 documents");
+        holder.documentSubjects.setText(String.format("Displaying %d of %d subjects", current.displayingSubjects, current.totalSubjects));
 
+    }
+
+    public void updateSubjectCount(int position, long subjectsCount) {
+        Document currentDoc = data.get(position);
+        currentDoc.displayingSubjects = subjectsCount;
+        notifyItemChanged(position);
     }
 
     @Override

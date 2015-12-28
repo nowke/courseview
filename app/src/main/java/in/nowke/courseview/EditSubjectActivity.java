@@ -1,6 +1,7 @@
 package in.nowke.courseview;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.provider.UserDictionary;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +22,7 @@ import java.util.List;
 import in.nowke.courseview.adapters.CourseviewDBAdapter;
 import in.nowke.courseview.adapters.DocumentEditListAdapter;
 import in.nowke.courseview.classes.ClickListener;
+import in.nowke.courseview.classes.Constants;
 import in.nowke.courseview.classes.Helpers;
 import in.nowke.courseview.classes.RecyclerTouchListener;
 import in.nowke.courseview.model.Document;
@@ -74,7 +76,7 @@ public class EditSubjectActivity extends AppCompatActivity {
         documentListRecycler.setAdapter(adapter);
         documentListRecycler.addOnItemTouchListener(new RecyclerTouchListener(this, documentListRecycler, new ClickListener() {
             @Override
-            public void onClick(View view, int position) {
+            public void onClick(View view, final int position) {
                 TextView documentIdText = (TextView) view.findViewById(R.id.documentId);
                 long documentId = Long.parseLong(documentIdText.getText().toString());
                 final List<Subject> subjectList = helper.getAllSubjects(documentId, true);
@@ -127,12 +129,17 @@ public class EditSubjectActivity extends AppCompatActivity {
 //                                    Log.i("LOL", "isDisplayed: " + subjectDisplayedArrayList.get(i));
                                     helper.changeDisplaySubject(subjectId, subjectDisplayedArrayList.get(i));
                                 }
+                                Intent resultIntent = new Intent();
+                                resultIntent.putExtra(Constants.INTENT_UPDATE, true);
+                                setResult(Constants.RESULT_DOCUMENT_UPDATE, resultIntent);
+
+                                adapter.updateSubjectCount(position, trueCount);
                             }
-                        });
+                        })
+                        .setNegativeButton(R.string.button_cancel, null);
 
                 AlertDialog alert = builder.create();
                 alert.show();
-
 
             }
 

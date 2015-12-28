@@ -72,7 +72,7 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
 
     @Override
     protected void onPostExecute(String fileContent) {
-
+        long documentId = -1;
         if (progressDialog != null ) {
             progressDialog.setMessage("Writing contents...");
         }
@@ -103,8 +103,10 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
             document.originalId = documentListWrapper.getInt("id");
             document.title = documentListWrapper.getString("title");
             document.owner = documentListWrapper.getString("owner");
-            long documentId = helper.addDocument(document);
+            document.modified = documentListWrapper.getString("modified");
 
+            documentId = helper.addDocument(document);
+            Log.i("LOL", String.valueOf(documentId));
             // Fill subjects
             long curSubId = helper.addSubjects(subjects, documentId);
             helper.updateCurrentSubjectToDocument(documentId, curSubId);
@@ -128,6 +130,6 @@ public class DocumentDownloaderTask extends AsyncTask<Integer, String, String> {
         if (progressDialog != null) {
             progressDialog.dismiss();
         }
-        listener.onTaskCompleted();
+        listener.onTaskCompleted(documentId);
     }
 }

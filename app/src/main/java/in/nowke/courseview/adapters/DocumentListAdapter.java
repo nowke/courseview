@@ -2,6 +2,7 @@ package in.nowke.courseview.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -19,6 +20,7 @@ import in.nowke.courseview.AddDocumentActivity;
 import in.nowke.courseview.R;
 import in.nowke.courseview.classes.Constants;
 import in.nowke.courseview.classes.DocumentDownloaderTask;
+import in.nowke.courseview.classes.Helpers;
 import in.nowke.courseview.classes.OnTaskCompleted;
 import in.nowke.courseview.model.Document;
 
@@ -60,8 +62,17 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
         // Check if document exists
         if (helper.isDocumentExists((int) current.originalId)) {
-            holder.downloadButton.setVisibility(View.GONE);
-            holder.documentAvailable.setVisibility(View.VISIBLE);
+
+            if (helper.getDocumentModified((int) current.originalId).equals(current.modified)) {
+                holder.downloadButton.setVisibility(View.GONE);
+                holder.documentAvailable.setVisibility(View.VISIBLE);
+            } else {
+                holder.downloadButton.setText(R.string.btn_update);
+                holder.downloadButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_update_black_18dp, 0, 0, 0);
+
+                long documentId = helper.getDocumentIdFromOriginalId(current.originalId);
+                holder.documentExistingId.setText(String.valueOf(documentId));
+            }
         }
     }
 
@@ -78,6 +89,7 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
 
         Button downloadButton;
         TextView documentAvailable;
+        TextView documentExistingId;
 
         public DocumentListViewHolder(View itemView) {
             super(itemView);
@@ -89,16 +101,31 @@ public class DocumentListAdapter extends RecyclerView.Adapter<DocumentListAdapte
             downloadButton = (Button) itemView.findViewById(R.id.documentDownload);
             documentAvailable = (TextView) itemView.findViewById(R.id.documentAvailable);
 
+            documentExistingId = (TextView) itemView.findViewById(R.id.documentExistingId);
+
             downloadButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int docId = Integer.parseInt(documentId.getText().toString());
                     new DocumentDownloaderTask(context, new OnTaskCompleted() {
                         @Override
-                        public void onTaskCompleted() {
-                            // WARNING: This executes even if not downloaded properly !!
+                        public void onTaskCompleted(long createdDocumentId) {
                             downloadButton.setVisibility(View.GONE);
                             documentAvailable.setVisibility(View.VISIBLE);
+
+                            // Delete old doc if updated
+                            if (downloadButton.getText().equals(context.getResources().getString(R.string.btn_update))) {
+                                long documentIdToDelete = Long.parseLong(documentExistingId.getText().toString());
+                                helper.deleteDocument(documentIdToDelete);
+
+                                // update current doc id
+                                SharedPreferences preferences = context.getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE);
+                                long previousDocumentId = preferences.getLong(Constants.PREVIOUS_DOC_PREF, -1);
+                                if (previousDocumentId == documentIdToDelete) {
+                                    Helpers.setPreviousDocument(preferences, createdDocumentId);
+                                }
+                            }
+
                             Intent intent = new Intent(Constants.ACTION_INTENT_DOCUMENT);
                             intent.putExtra(Constants.INTENT_UPDATE, true);
                             LocalBroadcastManager.getInstance(context).sendBroadcast(intent);

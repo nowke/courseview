@@ -9,4 +9,9 @@ public class Document {
     public long id;
     public long curSubId;
     public long originalId;
+
+    public long totalSubjects;
+    public long displayingSubjects;
+
+    public String modified;
 }

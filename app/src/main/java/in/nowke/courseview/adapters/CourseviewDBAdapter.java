@@ -34,6 +34,7 @@ public class CourseviewDBAdapter {
         contentValues.put(CourseDBHelper.DOCUMENT_TITLE, document.title);
         contentValues.put(CourseDBHelper.DOCUMENT_OWNER, document.owner);
         contentValues.put(CourseDBHelper.DOCUMENT_ORIGINAL_ID, document.originalId);
+        contentValues.put(CourseDBHelper.DOCUMENT_MODIFIED, document.modified);
 
         long id = db.insert(CourseDBHelper.TABLE_DOCUMENT, null, contentValues);
 
@@ -190,6 +191,9 @@ public class CourseviewDBAdapter {
             document.title = documentTitle;
             document.owner = documentOwner;
 
+            document.totalSubjects = getSubjectsCount(documentId, true);
+            document.displayingSubjects = getSubjectsCount(documentId, false);
+
             documents.add(document);
         }
         cursor.close();
@@ -199,6 +203,16 @@ public class CourseviewDBAdapter {
     public long getDocumentCount() {
         SQLiteDatabase db = helper.getReadableDatabase();
         return DatabaseUtils.queryNumEntries(db, CourseDBHelper.TABLE_DOCUMENT);
+    }
+
+    public long getSubjectsCount(long documentId, boolean includeNotDisplayed) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        if (includeNotDisplayed) {
+            return DatabaseUtils.queryNumEntries(db, CourseDBHelper.TABLE_SUBJECT, CourseDBHelper.SUBJECT_DOCUMENT_ID + "=" + documentId);
+        } else {
+            return DatabaseUtils.queryNumEntries(db, CourseDBHelper.TABLE_SUBJECT,
+                                                 CourseDBHelper.SUBJECT_DOCUMENT_ID + "=" + documentId + " AND " + CourseDBHelper.SUBJECT_IS_DISPLAYED + "=1");
+        }
     }
 
     public Document getDocument(String documentTitle) {
@@ -225,6 +239,34 @@ public class CourseviewDBAdapter {
         cursor.close();
 
         return hasEntry;
+    }
+
+    public String getDocumentModified(int originalId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.DOCUMENT_MODIFIED};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_DOCUMENT, columns, CourseDBHelper.DOCUMENT_ORIGINAL_ID + "=" + originalId, null, null, null, null);
+
+        String modified = "";
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(CourseDBHelper.DOCUMENT_MODIFIED);
+            modified = cursor.getString(index);
+        }
+        cursor.close();
+        return modified;
+    }
+
+    public long getDocumentIdFromOriginalId(long originalId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {CourseDBHelper.DOCUMENT_ID};
+        Cursor cursor = db.query(CourseDBHelper.TABLE_DOCUMENT, columns, CourseDBHelper.DOCUMENT_ORIGINAL_ID + "=" + originalId, null, null, null, null);
+
+        long documentId = -1;
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(CourseDBHelper.DOCUMENT_ID);
+            documentId = cursor.getLong(index);
+        }
+        cursor.close();
+        return documentId;
     }
 
     public long getDocumentIdFromSubject(long subjectId) {
@@ -274,6 +316,12 @@ public class CourseviewDBAdapter {
         }
     }
 
+    public void deleteDocument(long documentId) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        db.delete(CourseDBHelper.TABLE_DOCUMENT, CourseDBHelper.DOCUMENT_ID + "=" + documentId, null);
+        db.delete(CourseDBHelper.TABLE_SUBJECT, CourseDBHelper.SUBJECT_DOCUMENT_ID + "=" + documentId, null);
+    }
+
     static class CourseDBHelper extends SQLiteOpenHelper  {
 
         // DATABASES
@@ -305,12 +353,12 @@ public class CourseviewDBAdapter {
         // CREATE DB STATEMENTS
         private static final String CREATE_DOCUMENT_TABLE = "CREATE TABLE " + TABLE_DOCUMENT + " (" +
                                                                 DOCUMENT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                                                                DOCUMENT_ORIGINAL_ID + " INTEGER UNIQUE, " +
+                                                                DOCUMENT_ORIGINAL_ID + " INTEGER, " +
                                                                 DOCUMENT_TITLE + " VARCHAR(100), " +
                                                                 DOCUMENT_OWNER + " VARCHAR(20), " +
                                                                 DOCUMENT_CUR_SUBJECT_ID + " INTEGER DEFAULT -1, " +
                                                                 DOCUMENT_CREATED + " DATETIME, " +
-                                                                DOCUMENT_MODIFIED + " DATETIME);";
+                                                                DOCUMENT_MODIFIED + " VARCHAR(50));";
 
         private static final String CREATE_SUBJECT_TABLE = "CREATE TABLE " + TABLE_SUBJECT + " (" +
                                                                 SUBJECT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -343,6 +391,7 @@ public class CourseviewDBAdapter {
             }
             catch (SQLException e) {
                 Toast.makeText(context, "" + e, Toast.LENGTH_LONG).show();
+                Log.i("LOL", e.toString());
             }
         }
 
