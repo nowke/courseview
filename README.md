@@ -9,7 +9,7 @@ Course syllabus Reader
 * Receive updates for documents
 
 ## Download App
-Download latest APK [here](apks/in.nowke.courseview-1.0.apk)
+Download latest APK [here](apks/in.nowke.courseview-1.0.apk?raw=true)
 
 ## Screenshots
 
